@@ -66,7 +66,7 @@ export default function DeclarationPage({
   const chatHistory = isDemoMode ? demoChat : Array.isArray(result.chat_history) ? result.chat_history : [];
 
   useEffect(() => {
-    const next = bill.gross_weight_kg ?? invoice.gross_weight_kg;
+    const next = invoice.gross_weight_kg ?? bill.gross_weight_kg;
     if ((correctedWeight === "" || correctedWeight === "0") && next != null) setCorrectedWeight(String(next));
   }, [bill.gross_weight_kg, correctedWeight, invoice.gross_weight_kg]);
 
@@ -194,7 +194,10 @@ export default function DeclarationPage({
                 {currentPhase === "blocked" && (
                   <>
                     <div style={{ color: "var(--text-secondary)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", lineHeight: 1.6, marginBottom: "8px" }}>{issues[0]?.message ?? "A blocking validation issue needs a corrected value before clearance can continue."}</div>
-                    <input type="number" value={correctedWeight} onChange={(e) => setCorrectedWeight(e.target.value)} placeholder="Corrected gross weight" style={{ width: "100%", marginBottom: "8px", backgroundColor: "var(--bg-primary)", border: "1px solid #1e293b", color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", padding: "8px 10px" }} />
+                    <div style={{ color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.55rem", marginBottom: "4px" }}>
+                      CORRECTED B/L GROSS WEIGHT (kg) — Invoice says: <span style={{ color: "var(--accent-blue)" }}>{invoice.gross_weight_kg ?? "?"} kg</span>
+                    </div>
+                    <input type="number" value={correctedWeight} onChange={(e) => setCorrectedWeight(e.target.value)} placeholder="Enter corrected B/L gross weight" style={{ width: "100%", marginBottom: "8px", backgroundColor: "var(--bg-primary)", border: "1px solid #1e293b", color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", padding: "8px 10px" }} />
                     <button onClick={submitResume} disabled={resumeMutation.isPending} style={{ width: "100%", backgroundColor: "var(--accent-red)", border: "1px solid #ef4444", color: "#fff", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.62rem", fontWeight: 700, padding: "9px" }}>SUBMIT CORRECTION</button>
                   </>
                 )}
@@ -217,7 +220,7 @@ export default function DeclarationPage({
             </div>
             {chatError && <div style={{ color: "#fca5a5", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.6rem", marginBottom: "8px" }}>{chatError}</div>}
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
-              {["Summarize the shipment", "What compliance issues are open?", "Change bill of lading gross weight to 860"].map((value) => <button key={value} onClick={() => setChatInput(value)} style={{ backgroundColor: "rgba(37,99,235,0.08)", border: "1px solid rgba(59,130,246,0.25)", color: "var(--accent-blue)", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.56rem", padding: "5px 8px" }}>{value}</button>)}
+              {["Summarize the shipment", "What compliance issues are open?", `Change bill of lading gross weight to ${invoice.gross_weight_kg ?? bill.gross_weight_kg ?? 860}`].map((value) => <button key={value} onClick={() => setChatInput(value)} style={{ backgroundColor: "rgba(37,99,235,0.08)", border: "1px solid rgba(59,130,246,0.25)", color: "var(--accent-blue)", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.56rem", padding: "5px 8px" }}>{value}</button>)}
             </div>
             <textarea value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); sendChat(); } }} placeholder="Ask about the bills or request a field update." style={{ width: "100%", minHeight: "86px", backgroundColor: "var(--bg-primary)", border: "1px solid #1e293b", color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem", padding: "10px 12px", resize: "vertical" }} />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", marginTop: "10px" }}>
