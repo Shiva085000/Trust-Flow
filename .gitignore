@@ -43,3 +43,14 @@ backend/uploads/
 .env.production
 .claudesettings
 debug.log
+
+# Vector DB / ML indexes & data
+backend/data/chroma_hs_index/
+backend/data/chroma*/
+*.chroma
+*.faiss
+*.index
+
+# Logs
+*.log
+logs/
